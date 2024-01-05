@@ -96,6 +96,10 @@ UIButton *buttonVideoTransformerToggle;
     [self doConnect];
 }
 
+- (IBAction)closeAction:(id)sender {
+  [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
@@ -139,7 +143,7 @@ UIButton *buttonVideoTransformerToggle;
         [self showAlert:[error localizedDescription]];
     }
     
-    [self.view addSubview:_publisher.view];
+    [self.view insertSubview:_publisher.view atIndex:0];
     [_publisher.view setFrame:CGRectMake(0, 0, widgetWidth, widgetHeight)];
     
     // Configure toogle button
