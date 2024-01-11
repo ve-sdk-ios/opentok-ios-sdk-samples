@@ -97,7 +97,9 @@ UIButton *buttonVideoTransformerToggle;
 }
 
 - (IBAction)closeAction:(id)sender {
-  [self dismissViewControllerAnimated:YES completion:nil];
+    OTError *error;
+    [self.session unpublish:_publisher error:&error];
+    NSLog(@"Unpublish publisher stream id %@, error = %@", _publisher.stream.streamId, error.localizedDescription);
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -304,6 +306,8 @@ didFailWithError:(OTError*)error
     }
     
     [self cleanupPublisher];
+    NSLog(@"streamDestroyed stream id %@", stream.streamId);
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)publisher:(OTPublisherKit*)publisher
