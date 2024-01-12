@@ -21,6 +21,9 @@ static NSString* const kToken = @"";
 @property (nonatomic) OTSession *session;
 @property (nonatomic) OTPublisher *publisher;
 @property (nonatomic) OTSubscriber *subscriber;
+
+@property (weak, nonatomic) IBOutlet UIButton *closeButton;
+
 @end
 
 static double widgetHeight = 240;
@@ -94,12 +97,13 @@ UIButton *buttonVideoTransformerToggle;
                                        sessionId:kSessionId
                                         delegate:self];
     [self doConnect];
+    [self.closeButton setEnabled:NO];
 }
 
 - (IBAction)closeAction:(id)sender {
     OTError *error;
-    [self.session unpublish:_publisher error:&error];
-    NSLog(@"Unpublish publisher stream id %@, error = %@", _publisher.stream.streamId, error.localizedDescription);
+    [self.session disconnect:&error];
+    NSLog(@"Disconnect session with id %@, error = %@", self.session.sessionId, error.localizedDescription);
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -221,6 +225,7 @@ UIButton *buttonVideoTransformerToggle;
     [NSString stringWithFormat:@"Session disconnected: (%@)",
      session.sessionId];
     NSLog(@"sessionDidDisconnect (%@)", alertMessage);
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -295,6 +300,7 @@ didFailWithError:(OTError*)error
     streamCreated:(OTStream *)stream
 {
     NSLog(@"Publishing");
+    [_closeButton setEnabled:YES];
 }
 
 - (void)publisher:(OTPublisherKit*)publisher
@@ -306,8 +312,6 @@ didFailWithError:(OTError*)error
     }
     
     [self cleanupPublisher];
-    NSLog(@"streamDestroyed stream id %@", stream.streamId);
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)publisher:(OTPublisherKit*)publisher
